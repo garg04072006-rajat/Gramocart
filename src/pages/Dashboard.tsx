@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useAuth } from "@/lib/AuthContext";
 import { User, ShoppingBag, History, Wallet, MapPin, Settings, LogOut, Package, CheckCircle, XCircle, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -82,6 +83,8 @@ const Dashboard = () => {
     const variant = variants[status as keyof typeof variants];
     return <Badge className={variant.className}>{variant.label}</Badge>;
   };
+
+  const { logout } = useAuth();
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -192,7 +195,11 @@ const Dashboard = () => {
 
             <Separator className="my-4" />
 
-            <Button variant="ghost" className="w-full justify-start text-destructive hover:text-destructive">
+            <Button
+              variant="ghost"
+              className="w-full justify-start text-destructive hover:text-destructive"
+              onClick={() => logout()}
+            >
               <LogOut className="h-4 w-4 mr-2" />
               Logout
             </Button>

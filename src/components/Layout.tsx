@@ -1,9 +1,11 @@
 import { Link, useNavigate } from "react-router-dom";
-import { Search, ShoppingCart, User, Menu } from "lucide-react";
+import { Search, ShoppingCart, User, Menu, Instagram, Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter, DialogTrigger } from "@/components/ui/dialog";
 import { useState } from "react";
+import { useAuth } from "@/lib/AuthContext";
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -12,6 +14,8 @@ interface LayoutProps {
 export const Layout = ({ children }: LayoutProps) => {
   const navigate = useNavigate();
   const [cartCount] = useState(3); // Mock cart count
+  const { isLoggedIn, login, isLoginOpen, setLoginOpen } = useAuth();
+  const [phone, setPhone] = useState("");
 
   return (
     <div className="min-h-screen bg-background">
@@ -56,13 +60,54 @@ export const Layout = ({ children }: LayoutProps) => {
                   </Badge>
                 )}
               </Button>
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => navigate("/dashboard")}
-              >
-                <User className="h-5 w-5" />
-              </Button>
+              {isLoggedIn ? (
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => navigate("/dashboard")}
+                >
+                  <User className="h-5 w-5" />
+                </Button>
+              ) : (
+                <Dialog open={isLoginOpen} onOpenChange={setLoginOpen}>
+                  <DialogTrigger asChild>
+                    <Button variant="ghost">Login</Button>
+                  </DialogTrigger>
+                  <DialogContent>
+                    <DialogHeader>
+                      <DialogTitle>Login</DialogTitle>
+                      <DialogDescription>Login with your mobile number</DialogDescription>
+                    </DialogHeader>
+
+                    <div className="grid gap-2">
+                      <Input
+                        placeholder="Enter mobile number"
+                        value={phone}
+                        onChange={(e) => setPhone(e.target.value)}
+                        className="w-full"
+                      />
+                    </div>
+
+                    <DialogFooter>
+                      <Button variant="outline" onClick={() => setLoginOpen(false)}>Cancel</Button>
+                      <Button
+                        onClick={() => {
+                          const cleaned = phone.replace(/\D/g, "");
+                          if (cleaned.length < 10) {
+                            // simple client-side validation
+                            alert("Please enter a valid mobile number (10 digits)");
+                            return;
+                          }
+                          login(cleaned);
+                          setLoginOpen(false);
+                        }}
+                      >
+                        Login
+                      </Button>
+                    </DialogFooter>
+                  </DialogContent>
+                </Dialog>
+              )}
             </div>
           </div>
 
@@ -85,7 +130,27 @@ export const Layout = ({ children }: LayoutProps) => {
       {/* Footer */}
       <footer className="border-t bg-card mt-12">
         <div className="container mx-auto px-4 py-8">
-          <div className="grid grid-cols-2 gap-8 md:grid-cols-4">
+          <div className="grid grid-cols-1 gap-8 md:grid-cols-4">
+            {/* Left: logo, description and social icons */}
+            <div className="md:col-span-1">
+              <Link to="/" className="flex items-center gap-2 mb-3">
+                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary">
+                  <span className="text-xl font-bold text-primary-foreground">G</span>
+                </div>
+                <span className="text-lg font-bold text-primary">Gramocart</span>
+              </Link>
+              <p className="text-sm text-muted-foreground mb-3">Shop local, support villages — fresh groceries delivered to your doorstep.</p>
+              <div className="flex items-center gap-3">
+                <a href="https://instagram.com" target="_blank" rel="noreferrer" className="text-muted-foreground hover:text-primary">
+                  <Instagram className="h-5 w-5" />
+                </a>
+                <a href="mailto:hello@gramocart.example" className="text-muted-foreground hover:text-primary">
+                  <Mail className="h-5 w-5" />
+                </a>
+              </div>
+            </div>
+
+            {/* Right: three columns (About, Quick Links, Support) */}
             <div>
               <h3 className="font-semibold text-foreground mb-3">About</h3>
               <ul className="space-y-2 text-sm text-muted-foreground">
@@ -109,10 +174,6 @@ export const Layout = ({ children }: LayoutProps) => {
                 <li><Link to="/terms" className="hover:text-primary transition-colors">Terms of Service</Link></li>
                 <li><Link to="/privacy" className="hover:text-primary transition-colors">Privacy Policy</Link></li>
               </ul>
-            </div>
-            <div>
-              <h3 className="font-semibold text-foreground mb-3">Download App</h3>
-              <p className="text-sm text-muted-foreground mb-3">Coming soon on iOS and Android</p>
             </div>
           </div>
           <div className="mt-8 border-t pt-6 text-center text-sm text-muted-foreground">

@@ -1,7 +1,8 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { ShoppingBag, Apple, Milk, Croissant, Package, Carrot, Leaf } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { useAuth } from "@/lib/AuthContext";
 
 const categories = [
   { id: "groceries", name: "Groceries", icon: ShoppingBag, color: "bg-orange-100 text-orange-600" },
@@ -13,6 +14,25 @@ const categories = [
 ];
 
 const Home = () => {
+  const navigate = useNavigate();
+  const { isLoggedIn, setLoginOpen } = useAuth();
+
+  const openCategory = (id: string) => {
+    if (!isLoggedIn) {
+      setLoginOpen(true);
+      return;
+    }
+    navigate(`/category/${id}`);
+  };
+
+  const openShop = (i: number) => {
+    if (!isLoggedIn) {
+      setLoginOpen(true);
+      return;
+    }
+    navigate(`/shop/${i}`);
+  };
+
   return (
     <div>
       {/* Hero Section */}
@@ -30,7 +50,7 @@ const Home = () => {
             <p className="text-lg md:text-xl text-muted-foreground mb-8">
               Get groceries, fresh fruits, dairy, and more delivered from your trusted neighborhood stores.
             </p>
-            <Button size="lg" className="rounded-full px-8">
+            <Button size="lg" className="rounded-full px-8" onClick={() => navigate('/start-shopping')}>
               Start Shopping
             </Button>
           </div>
@@ -66,7 +86,7 @@ const Home = () => {
 
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
           {categories.map((category) => (
-            <Link key={category.id} to={`/category/${category.id}`}>
+            <div key={category.id} onClick={() => openCategory(category.id)}>
               <Card className="group hover:shadow-lg transition-all duration-300 hover:-translate-y-1 cursor-pointer border-2 hover:border-primary/50">
                 <CardContent className="p-6 text-center">
                   <div className={`mx-auto w-16 h-16 rounded-2xl flex items-center justify-center mb-4 ${category.color} group-hover:scale-110 transition-transform`}>
@@ -75,14 +95,14 @@ const Home = () => {
                   <h3 className="font-semibold text-foreground">{category.name}</h3>
                 </CardContent>
               </Card>
-            </Link>
+            </div>
           ))}
         </div>
       </section>
 
       {/* Featured Shops */}
-      <section className="container mx-auto px-4 py-12 bg-secondary/20 -mx-4">
-        <div className="container mx-auto px-4">
+      <section className="container px-4 py-12 bg-secondary/20 -mx-4">
+        <div className="mx-auto px-4">
           <div className="mb-8">
             <h2 className="text-3xl font-bold text-foreground mb-2">Popular Shops Near You</h2>
             <p className="text-muted-foreground">Trusted by thousands of happy customers</p>
@@ -90,19 +110,21 @@ const Home = () => {
 
           <div className="grid md:grid-cols-3 gap-6">
             {[1, 2, 3].map((i) => (
-              <Card key={i} className="hover:shadow-lg transition-shadow">
-                <CardContent className="p-0">
-                  <div className="h-48 bg-gradient-to-br from-primary/20 to-accent/20" />
-                  <div className="p-4">
-                    <h3 className="font-semibold text-lg mb-1">Local Store {i}</h3>
-                    <p className="text-sm text-muted-foreground mb-2">Main Street, Village Center</p>
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm font-medium text-primary">⭐ 4.5</span>
-                      <Button size="sm" variant="outline" className="rounded-full">View Shop</Button>
+              <div key={i} onClick={() => openShop(i)}>
+                <Card className="hover:shadow-lg transition-shadow cursor-pointer">
+                  <CardContent className="p-0">
+                    <div className="h-48 bg-gradient-to-br from-primary/20 to-accent/20" />
+                    <div className="p-4">
+                      <h3 className="font-semibold text-lg mb-1">Local Store {i}</h3>
+                      <p className="text-sm text-muted-foreground mb-2">Main Street, Village Center</p>
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm font-medium text-primary">⭐ 4.5</span>
+                        <Button size="sm" variant="outline" className="rounded-full">View Shop</Button>
+                      </div>
                     </div>
-                  </div>
-                </CardContent>
-              </Card>
+                  </CardContent>
+                </Card>
+              </div>
             ))}
           </div>
         </div>

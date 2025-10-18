@@ -4,6 +4,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Layout } from "./components/Layout";
+import { AuthProvider } from "./lib/AuthContext";
 import Home from "./pages/Home";
 import Category from "./pages/Category";
 import ShopDetails from "./pages/ShopDetails";
@@ -12,6 +13,7 @@ import Checkout from "./pages/Checkout";
 import OrderConfirmation from "./pages/OrderConfirmation";
 import Dashboard from "./pages/Dashboard";
 import NotFound from "./pages/NotFound";
+import StartShopping from "./pages/StartShopping";
 
 const queryClient = new QueryClient();
 
@@ -21,8 +23,9 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
-        <Layout>
-          <Routes>
+        <AuthProvider>
+          <Layout>
+            <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/category/:categoryId" element={<Category />} />
             <Route path="/shop/:shopId" element={<ShopDetails />} />
@@ -30,9 +33,11 @@ const App = () => (
             <Route path="/checkout" element={<Checkout />} />
             <Route path="/order-confirmation" element={<OrderConfirmation />} />
             <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/start-shopping" element={<StartShopping />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
-        </Layout>
+          </Layout>
+        </AuthProvider>
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>
