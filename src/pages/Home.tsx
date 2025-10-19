@@ -79,9 +79,9 @@ const Home = () => {
 
       {/* Categories Section */}
       <section className="container mx-auto px-4 py-12">
-        <div className="mb-8">
+        <div className="mb-8 text-center">
           <h2 className="text-3xl font-bold text-foreground mb-2">Shop by Category</h2>
-          <p className="text-muted-foreground">Browse products from local stores near you</p>
+          <p className="text-muted-foreground mx-auto max-w-2xl">Browse products from local stores near you</p>
         </div>
 
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
@@ -101,11 +101,11 @@ const Home = () => {
       </section>
 
       {/* Featured Shops */}
-      <section className="container px-4 py-12 bg-secondary/20 -mx-4">
-        <div className="mx-auto px-4">
-          <div className="mb-8">
+      <section className="container mx-auto px-4 py-12 bg-secondary/20">
+        <div>
+          <div className="mb-8 text-center">
             <h2 className="text-3xl font-bold text-foreground mb-2">Popular Shops Near You</h2>
-            <p className="text-muted-foreground">Trusted by thousands of happy customers</p>
+            <p className="text-muted-foreground mx-auto max-w-2xl">Trusted by thousands of happy customers</p>
           </div>
 
           <div className="grid md:grid-cols-3 gap-6">

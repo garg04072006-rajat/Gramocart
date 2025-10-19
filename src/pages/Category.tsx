@@ -53,11 +53,11 @@ const Category = () => {
   return (
     <div className="container mx-auto px-4 py-8">
       {/* Header */}
-      <div className="mb-8">
+      <div className="mb-8 text-center">
         <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-2 capitalize">
           {categoryId?.replace("-", " ")} Shops
         </h1>
-        <p className="text-muted-foreground">
+        <p className="text-muted-foreground mx-auto max-w-2xl">
           {mockShops.length} shops available near you
         </p>
       </div>
