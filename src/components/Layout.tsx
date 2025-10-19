@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter, DialogTrigger } from "@/components/ui/dialog";
 import { useState } from "react";
 import { useAuth } from "@/lib/AuthContext";
+import { useCart } from "@/lib/CartContext";
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -13,7 +14,7 @@ interface LayoutProps {
 
 export const Layout = ({ children }: LayoutProps) => {
   const navigate = useNavigate();
-  const [cartCount] = useState(3); // Mock cart count
+  const { totalCount } = useCart();
   const { isLoggedIn, login, isLoginOpen, setLoginOpen } = useAuth();
   const [phone, setPhone] = useState("");
 
@@ -51,12 +52,12 @@ export const Layout = ({ children }: LayoutProps) => {
                 onClick={() => navigate("/cart")}
               >
                 <ShoppingCart className="h-5 w-5" />
-                {cartCount > 0 && (
+                {totalCount > 0 && (
                   <Badge
                     variant="destructive"
                     className="absolute -right-1 -top-1 h-5 w-5 rounded-full p-0 text-xs flex items-center justify-center"
                   >
-                    {cartCount}
+                    {totalCount}
                   </Badge>
                 )}
               </Button>

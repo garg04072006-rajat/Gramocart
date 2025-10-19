@@ -5,6 +5,8 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useState } from "react";
 import { toast } from "sonner";
+import { useCart } from "@/lib/CartContext";
+import { useNavigate } from "react-router-dom";
 
 const mockProducts = [
   { id: "1", name: "Organic Rice (1kg)", price: 80, image: "rice", inStock: true },
@@ -19,12 +21,8 @@ const mockProducts = [
 
 const ShopDetails = () => {
   const { shopId } = useParams();
-  const [cartItems, setCartItems] = useState<Record<string, number>>({});
-
-  const addToCart = (productId: string, productName: string) => {
-    setCartItems(prev => ({ ...prev, [productId]: (prev[productId] || 0) + 1 }));
-    toast.success(`${productName} added to cart!`);
-  };
+  const { add, increment, decrement, getQuantity } = useCart();
+  const navigate = useNavigate();
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -100,19 +98,27 @@ const ShopDetails = () => {
 
               {/* Product Info */}
               <div className="p-3 md:p-4">
-                <h3 className="font-semibold text-sm md:text-base text-foreground mb-2 line-clamp-2 min-h-[2.5rem]">
+                <h3 onClick={() => navigate(`/product/${product.id}`)} className="font-semibold text-sm md:text-base text-foreground mb-2 line-clamp-2 min-h-[2.5rem] cursor-pointer">
                   {product.name}
                 </h3>
                 <div className="flex items-center justify-between">
                   <span className="text-lg font-bold text-primary">₹{product.price}</span>
-                  <Button
-                    size="sm"
-                    className="rounded-full h-8 w-8 p-0"
-                    disabled={!product.inStock}
-                    onClick={() => addToCart(product.id, product.name)}
-                  >
-                    <ShoppingCart className="h-4 w-4" />
-                  </Button>
+                  {getQuantity(product.id) > 0 ? (
+                    <div className="flex items-center border rounded-full overflow-hidden">
+                      <button className="px-3 py-1" onClick={() => decrement(product.id)}>-</button>
+                      <div className="px-3 py-1 font-medium">{getQuantity(product.id)}</div>
+                      <button className="px-3 py-1" onClick={() => increment(product.id)}>+</button>
+                    </div>
+                  ) : (
+                    <Button
+                      size="sm"
+                      className="rounded-full h-8 w-8 p-0"
+                      disabled={!product.inStock}
+                      onClick={() => { add({ id: product.id, name: product.name, price: product.price }); toast.success(`${product.name} added to cart!`); }}
+                    >
+                      <ShoppingCart className="h-4 w-4" />
+                    </Button>
+                  )}
                 </div>
               </div>
             </CardContent>
